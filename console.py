@@ -3,6 +3,12 @@
 import cmd
 from models.base_model import BaseModel
 from models import storage
+from models.user import User
+from models.state imoprt State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
@@ -31,3 +37,13 @@ class HBNBCommand(cmd.Cmd):
         """ Creates a new instance of BaseModel, saves it (to the JSON file)
         and prints the id
         """
+        args = arg.split()
+        if len(args) == 0:
+            print("** class name missing **")
+        elif args[0] not in HBNBCommand.__classes:
+            print("** class doesn't exist **")
+        else:
+            new_instance = eval(f"{args[0]}()")
+            print(new_instance.id)
+
+    def do_show(self, arg):
