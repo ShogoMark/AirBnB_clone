@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 """Unittest module for the State Class."""
-
 import unittest
 from datetime import datetime
 import time
@@ -14,7 +13,6 @@ from models.base_model import BaseModel
 
 
 class TestState(unittest.TestCase):
-
     """Test Cases for the State class."""
 
     def setUp(self):
