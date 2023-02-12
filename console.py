@@ -145,7 +145,7 @@ class HBNBCommand(cmd.Cmd):
             instances of a class """
 
         args = arg.split('.')
-        if args[0] in HBNBCommand.__classes:
+        if args[0] in self.__classes:
             if args[1] == 'all()':
                 self.do_all(args[0])
             elif args[1].startswith("show"):
