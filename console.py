@@ -97,7 +97,7 @@ class HBNBCommand(cmd.Cmd):
         else:
             _dict = storage.all().items()
             print([str(v) for k, v in store if k.startswith(args[0])])
-    
+
     def do_update(self, arg):
         """ Updates an instance based on the class
             name and id by adding or updating attribute
