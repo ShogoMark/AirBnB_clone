@@ -31,29 +31,32 @@ class HBNBCommand(cmd.Cmd):
 
     def emptyline(self):
         """ Take no action when an empty line is received """
-        pass
+        return
 
     def do_create(self, arg):
         """ Creates a new instance of BaseModel, saves it (to the JSON file)
         and prints the id
         """
         args = arg.split()
+
         if len(args) == 0:
             print("** class name missing **")
-        elif args[0] not in HBNBCommand.__classes:
+        elif args[0] not in self.__classes:
             print("** class doesn't exist **")
         else:
-            new_instance = eval(f"{args[0]}()")
-            print(new_instance.id)
+            new_object = eval(f"{args[0]}")()
+            print(new_object.id)
+        storage.save()
 
     def do_show(self, arg):
          """ Prints the string representation of an instance
             based on the class name and id
         """
         args = arg.split()
+
         if len(args) == 0:
             print("** class name missing **")
-        elif args[0] not in HBNBCommand.__classes:
+        elif args[0] not in self.__classes:
             print("** class doesn't exist **")
         elif len(args) == 1:
             print("** instance id missing **")
@@ -66,9 +69,10 @@ class HBNBCommand(cmd.Cmd):
         """Deletes an instance based on the class name and id
         """
         args = arg.split()
+
         if len(args) == 0:
             print("** class name missing **")
-        elif args[0] not in HBNBCommand.__classes:
+        elif args[0] not in self.__classes:
             print("** class doesn't exist **")
         elif len(args) == 1:
             print("** instance id missing **")
@@ -81,19 +85,16 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, arg):
         """ Prints all string representation of all instances
             based or not on the class name """
+        
         args = arg.split()
+
         if len(args) == 0:
-            print([str(value) for key, value in storage.all().items()])
-        elif args[0] not in HBNBCommand.__classes:
+            print([str(value) for value in storage.all(),values()])
+        elif args[0] not in self.__classes:
             print("** class doesn't exist **")
         else:
-            store = storage.all().items()
+            _dict = storage.all().items()
             print([str(v) for k, v in store if k.startswith(args[0])])
-
-    def do_count(self, arg):
-        """ retrieve the number of instances of a class """
-        store = storage.all().items()
-        print(len([v for k, v in store if k.startswith(arg)]))
 
     def default(self, arg):
         args = arg.split('.')
