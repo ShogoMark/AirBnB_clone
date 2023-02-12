@@ -5,9 +5,9 @@ from models.base_model import BaseModel
 
 class Place(BaseModel):
     """ Defines a class - Place """
-    city_id: = ""
-    user_id: = ""
-    name: = ""
+    city_id = ""
+    user_id = ""
+    name = ""
     description = ""
     number_rooms = 0
     number_bathrooms = 0
