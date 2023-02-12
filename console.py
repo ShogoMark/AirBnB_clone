@@ -96,7 +96,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         else:
             _dict = storage.all().items()
-            print([str(v) for k, v in store if k.startswith(args[0])])
+            print([str(v) for k, v in _dict if k.startswith(args[0])])
 
     def do_update(self, arg):
         """ Updates an instance based on the class
@@ -140,20 +140,45 @@ class HBNBCommand(cmd.Cmd):
 
     def default(self, arg):
         """ Update your command interpreter to retrieve all
-            instances of a class """
-
+            instances of a class
+                Usage: <class name>.all()
+            Update your command interpreter to retrieve
+            the number of instances of a class
+                Usage: <class name>.count()
+            Update your command interpreter to retrieve
+            an instance based on its ID
+                Usage: <class name>.show(<id>)
+            Update your command interpreter to destroy an
+            instance based on his ID
+                Usage: <class name>.destroy(<id>)
+            Update your command interpreter to update an
+            instance based on his ID
+            Usage: <class name>.update(<id>, <attr name>, <attr value>)
+            Update your command interpreter to update an
+            instance based on his ID with a dictionary
+            Usage: <class name>.update(<id>, <dictionary representation>)
+        """
         args = arg.split('.')
         if args[0] in self.__classes:
-            if args[1] == 'all()':
+            if args[1] == "all()":
                 self.do_all(args[0])
+            elif args[1] == "count()":
+                _dict = storage.all().items()
+                list_ = [v for k, v in _dict if k.startswith(args[0])]
+                print(len(list_))
             elif args[1].startswith("show"):
-                identity = args[1].split('"')[1]
-                self.do_show(f"{args[0]} {identity}")
-            elif args[1] == 'count()':
-                self.do_count(args[0])
+                id_ = args[1].split('"')[1]
+                self.do_show(f"{args[0]} {id_}")
             elif args[1].startswith("destroy"):
-                identity = args[1].split('"')[1]
-                self.do_destroy(f"{args[0]} {identity}")
+                id_ = args[1].split('"')[1]
+                self.do_destroy(f"{args[0]} {id_}")
+            elif args[1].startswith("update"):
+                split_ = re.split('"update"|", "|\"', args[1])
+                print(split_)
+                id_ = split_[1]
+                attr_name = split_[2]
+                attr_value = split_[3]
+                self.do_update(f'{args[0]} {id_} {attr_name} "{attr_value}"')
 
 
 if __name__ == '__main__':
