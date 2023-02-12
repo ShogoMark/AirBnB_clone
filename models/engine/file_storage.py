@@ -22,3 +22,21 @@ class FileStorage:
 
         key = f"{obj.__class__.__name__}.{ obj.id}"
         self.__objects[key] = obj
+    
+    def save(self):
+        """ serializes `__objects` to the JSON file """
+        with open(self.__file_path, "w", encoding="utf-8") as f:
+            d = {k: v.to_dict() for k, v in self.__objects.items()}
+            json.dump(d, f)
+
+    def reload(self):
+        """ Reloads the stored objects """
+        try:
+            with open(self.__file_path, "r", encoding="utf-8") as f:
+                _dict = json.load(f)
+                for obj_dict in _dict.values():
+                    cls_name = obj_dict["__class__"]
+                    del obj_dict["__class__"]
+                    self.new(eval(cls_name)(**obj_dict))
+        except FileNotFoundError:
+            return
