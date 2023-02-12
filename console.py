@@ -12,14 +12,17 @@ from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
-    """Defines the command interpreter
-
-    Attributes:
-    prompt (str): The command prompt
-    """
+    """ Defines the command interpreter """
 
     prompt = "(hbnb) "
-    __classes = {"BaseModel"}
+    __classes = ["BaseModel",
+                 "User",
+                 "State",
+                 "City",
+                 "Amenity",
+                 "Place",
+                 "Review"
+                 ]
 
     def do_quit(self, arg):
         """ Command to exit the program """
@@ -66,8 +69,8 @@ class HBNBCommand(cmd.Cmd):
             print(storage.all()[f"{args[0]}.{args[1]}"])
 
     def do_destroy(self, arg):
-        """Deletes an instance based on the class name and id
-        """
+        """ Deletes an instance based on the class name and id """
+        
         args = arg.split()
 
         if len(args) == 0:
@@ -80,7 +83,7 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
         else:
             del (storage.all()[f"{args[0]}.{args[1]}"])
-            storage.save( )
+            storage.save()
 
     def do_all(self, arg):
         """ Prints all string representation of all instances
@@ -95,8 +98,52 @@ class HBNBCommand(cmd.Cmd):
         else:
             _dict = storage.all().items()
             print([str(v) for k, v in store if k.startswith(args[0])])
+    
+    def do_update(self, arg):
+        """ Updates an instance based on the class
+            name and id by adding or updating attribute
+            Usage: update <class name> <id> <attr name> "<attr value>"
+        """
+        args = arg.split()
+
+        if len(args) == 0:
+            print("** class name missing **")
+        elif args[0] not in self.__classes:
+            print("** class doesn't exist **")
+        elif len(args) == 1:
+            print("** instance id missing **")
+        elif f"{args[0]}.{args[1]}" not in storage.all():
+            print("** no instance found **")
+        elif len(args) == 2:
+            print("** attribute name missing **")
+        elif len(args) == 3:
+            print("** value missing **")
+        else:
+            obj_class = args[0]
+            obj_id = args[1]
+            obj_key = obj_class + "." + obj_id
+            obj = storage.all()[obj_key]
+
+            attr_name = args[2]
+            attr_value = args[3]
+
+            if attr_value[0] == '"':
+                attr_value = attr_value[1:-1]
+
+            if hasattr(obj, attr_name):
+                type_ = type(getattr(obj, attr_name))
+                if type_ in [str, float, int]:
+                    attr_value = type_(attr_value)
+                    setattr(obj, attr_name, attr_value)
+            else:
+                setattr(obj, attr_name, attr_value)
+            storage.save()
+
 
     def default(self, arg):
+        """ Update your command interpreter to retrieve all
+            instances of a class """
+
         args = arg.split('.')
         if args[0] in HBNBCommand.__classes:
             if args[1] == 'all()':
