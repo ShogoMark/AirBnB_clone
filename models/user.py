@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-""" user module """
+""" User module that creates a new user """
+from models.base_model import BaseModel
 
 
 class User(BaseModel):

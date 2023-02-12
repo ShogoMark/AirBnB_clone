@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 """ Creates a place module """
+from models.base_model import BaseModel
 
 
 class Place(BaseModel):
     """ Defines a class - Place """
-    city_id: string = ""
-    user_id: string = ""
-    name: string = ""
+    city_id = ""
+    user_id = ""
+    name = ""
     description = ""
     number_rooms = 0
     number_bathrooms = 0
