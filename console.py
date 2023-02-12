@@ -52,7 +52,7 @@ class HBNBCommand(cmd.Cmd):
         storage.save()
 
     def do_show(self, arg):
-         """ Prints the string representation of an instance
+        """ Prints the string representation of an instance
             based on the class name and id
         """
         args = arg.split()
