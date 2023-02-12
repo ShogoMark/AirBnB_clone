@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """ Creates a place module """
+from models.base_model import BaseModel
 
 
 class Place(BaseModel):
