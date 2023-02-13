@@ -1,7 +1,6 @@
 #!/usr/bin/python3
-""" The __init__ method """
-from engine.file_storage import Filestorage
-
+""" The _init_ method """
+from engine.file_storage import FileStorage
 
 storage = FileStorage()
 storage.reload()
