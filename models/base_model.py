@@ -1,8 +1,8 @@
 #!/usr/bin/python3
+""" Defines a class - BaseModel """
 import uuid
 from datetime import datetime
 import models
-""" Defines a class - BaseModel """
 
 
 class BaseModel():
@@ -11,7 +11,7 @@ class BaseModel():
     def __init__(self, *args, **kwargs):
         """ Initializes a new instance of BaseModel
         Args:
-            *args (any): unused
+            *args (tuple): unused
             **kwargs (dict): key & value pair of attributes
         """
 
@@ -25,6 +25,7 @@ class BaseModel():
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
+            models.storage.new(self)
 
     def __str__(self):
         """ Defines the string representation of the instance """
