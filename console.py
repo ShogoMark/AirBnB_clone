@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" Module that contains the entry point of the command interpreter """
+""" This module defines a class `HBNBCommand` """
 import cmd
 from models.base_model import BaseModel
 from models import storage
@@ -12,7 +12,7 @@ from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
-    """ Defines the command interpreter """
+    """contains the entry point of the command interpreter"""
 
     prompt = "(hbnb) "
     __classes = ["BaseModel",
@@ -25,20 +25,25 @@ class HBNBCommand(cmd.Cmd):
                  ]
 
     def do_quit(self, arg):
-        """ Command to exit the program """
+        """Quit command to exit the program
+        """
         return True
 
     def do_EOF(self, arg):
-        """ Signal to exit the program """
+        """EOF signal to exit the program
+        """
         return True
 
     def emptyline(self):
-        """ Take no action when an empty line is received """
+        """ Method called when an empty line is
+            entered in response to the prompt
+        """
         return
 
     def do_create(self, arg):
-        """ Creates a new instance of BaseModel, saves it (to the JSON file)
-        and prints the id
+        """ Creates a new instance of BaseModel,
+            saves it (to the JSON file) and prints the id
+            Usage: create <class_name>
         """
         args = arg.split()
 
@@ -52,8 +57,9 @@ class HBNBCommand(cmd.Cmd):
         storage.save()
 
     def do_show(self, arg):
-        """ Prints the string representation of an instance
-            based on the class name and id
+        """ Prints the string representation of
+            an instance based on the class name and id
+            Usage: show <class_name> <object_id>
         """
         args = arg.split()
 
@@ -69,8 +75,9 @@ class HBNBCommand(cmd.Cmd):
             print(storage.all()[f"{args[0]}.{args[1]}"])
 
     def do_destroy(self, arg):
-        """ Deletes an instance based on the class name and id """
-
+        """ Deletes an instance based on the class name and id
+            Usage: destroy <class_name> <object_id>
+        """
         args = arg.split()
 
         if len(args) == 0:
@@ -82,12 +89,14 @@ class HBNBCommand(cmd.Cmd):
         elif f"{args[0]}.{args[1]}" not in storage.all():
             print("** no instance found **")
         else:
-            del (storage.all()[f"{args[0]}.{args[1]}"])
-            storage.save()
+            del storage.all()[f"{args[0]}.{args[1]}"]
+        storage.save()
 
     def do_all(self, arg):
-        """ Prints all string representation of all instances
-            based or not on the class name """
+        """ Prints all string representation of all
+            instances based or not on the class name
+            Usage: all OR all <class_name>
+        """
         args = arg.split()
 
         if len(args) == 0:
@@ -96,7 +105,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         else:
             _dict = storage.all().items()
-            print([str(v) for k, v in store if k.startswith(args[0])])
+            print([str(v) for k, v in _dict if k.startswith(args[0])])
 
     def do_update(self, arg):
         """ Updates an instance based on the class
@@ -140,20 +149,59 @@ class HBNBCommand(cmd.Cmd):
 
     def default(self, arg):
         """ Update your command interpreter to retrieve all
-            instances of a class """
-
+            instances of a class
+                Usage: <class name>.all()
+            Update your command interpreter to retrieve
+            the number of instances of a class
+                Usage: <class name>.count()
+            Update your command interpreter to retrieve
+            an instance based on its ID
+                Usage: <class name>.show(<id>)
+            Update your command interpreter to destroy an
+            instance based on his ID
+                Usage: <class name>.destroy(<id>)
+            Update your command interpreter to update an
+            instance based on his ID
+            Usage: <class name>.update(<id>, <attr name>, <attr value>)
+            Update your command interpreter to update an
+            instance based on his ID with a dictionary
+            Usage: <class name>.update(<id>, <dictionary representation>)
+        """
         args = arg.split('.')
         if args[0] in self.__classes:
-            if args[1] == 'all()':
+            if args[1] == "all()":
                 self.do_all(args[0])
+            elif args[1] == "count()":
+                _dict = storage.all().items()
+                list_ = [v for k, v in _dict if k.startswith(args[0])]
+                print(len(list_))
             elif args[1].startswith("show"):
-                identity = args[1].split('"')[1]
-                self.do_show(f"{args[0]} {identity}")
-            elif args[1] == 'count()':
-                self.do_count(args[0])
+                id_ = args[1].split('"')[1]
+                self.do_show(f"{args[0]} {id_}")
             elif args[1].startswith("destroy"):
-                identity = args[1].split('"')[1]
-                self.do_destroy(f"{args[0]} {identity}")
+                id_ = args[1].split('"')[1]
+                self.do_destroy(f"{args[0]} {id_}")
+            elif args[1].startswith("update"):
+                split_ = args[1].split('(')
+                split_ = split_[1].split(')')
+                if ('{') in split_[0]:
+                    # if a dictionary is passed
+                    id_strip = split_[0].split(', {')
+                    id_strip = id_strip[0].split(', {')
+                    id_ = id_strip[0].strip('"')
+
+                    split_ = '{' + (split_[0].split('{'))[1]
+                    dict_ = eval(split_.strip('"'))
+
+                    if type(dict_) == dict:
+                        for k, v in dict_.items():
+                            self.do_update(f"{args[0]} {id_} {k} {v}")
+                else:
+                    split_ = split_[0].split(', ')
+                    id_ = split_[0].strip('"')
+                    attr_name = split_[1].strip('"')
+                    attr_value = split_[2].strip('"')
+                    self.do_update(f"{args[0]} {id_} {attr_name} {attr_value}")
 
 
 if __name__ == '__main__':
